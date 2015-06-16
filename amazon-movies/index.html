@@ -2,15 +2,23 @@
 <html>
 <head>
 <title>Servo Movies</title>
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'><link rel=stylesheet href=app.css></link>
+<link href='http://fonts.googleapis.com/css?family=Oxygen:400,700' rel='stylesheet' type='text/css'>
+<link rel=stylesheet href=app.css></link>
 </head>
 <body>
 <h1>Servo Movies</h1>
-<div id=details-pane class=collapsed><div id=details-poster></div><section id=details-infobox>
+<div id=details-pane class=collapsed>
+    <div id=details-poster></div>
+    <div id=details-poster-gradient></div>
+    <section id=details-infobox>
         <h2 id=details-title></h2>
-        <div id=details-genre></div>
-        <div id=details-actors></div>
+        <div id=details-star-rating>
+            <div class="star-rating a"></div>
+            <div class="star-rating b"></div>
+        </div>
         <div id=details-date></div>
+        <div id=details-rating></div>
+        <div id=details-running-time></div>
         <div id=details-price></div>
         <p id=details-description></p>
     </section>
@@ -19,7 +27,13 @@
 <section id=drawer>
     <div id=drawer-title-area>
         <h2 id=drawer-title></h2>
+        <div id=drawer-star-rating>
+            <div class="star-rating a"></div>
+            <div class="star-rating b"></div>
+        </div>
         <div id=drawer-date></div>
+        <div id=drawer-rating></div>
+        <div id=drawer-running-time></div>
     </div>
     <p id=drawer-description></p>
 </section>

@@ -68,10 +68,15 @@ function receivedBrowseData() {
         var title = item.getElementsByTagName("Title")[0].textContent;
         var image = item.getElementsByTagName("LargeImage")[0];
         var imageURL = image.getElementsByTagName("URL")[0].textContent;
+        var highResImage = item.getElementsByTagName("HiResImage")[0];
+        var highResImageURL = highResImage.getElementsByTagName("URL")[0].textContent;
+
+        console.log(this.responseText);
 
         var li = document.createElement("li");
         li.setAttribute("data-asin", asin);
         li.setAttribute("data-title", title);
+        li.setAttribute("data-high-res-image", highResImageURL);
         li.addEventListener("mouseover", itemMousedOver, false);
         li.addEventListener("click", itemClicked, false);
         li.setAttribute("title", title);
@@ -91,6 +96,9 @@ function itemMousedOver(event) {
 
     var asin = target.getAttribute("data-asin");
     document.getElementById('drawer').setAttribute("data-asin", asin);
+
+    var poster = document.getElementById('details-poster');
+    poster.style.backgroundImage = "url(" + target.getAttribute("data-high-res-image") + ")";
 
     // Request or fill in details.
     if (!(asin in items)) {
@@ -133,31 +141,10 @@ function itemMousedOver(event) {
 
 function itemClicked(event) {
     var target = event.currentTarget;
-    var targetRect = target.getBoundingClientRect();
 
     document.getElementById('details-pane').classList.remove('collapsed');
     document.getElementById('drawer').classList.add('collapsed');
-
-    var poster = document.getElementById('details-poster');
-    poster.style.backgroundImage = target.style.backgroundImage;
-
-    var posterRect = poster.getBoundingClientRect();
-    var delta = {
-        left: targetRect.left - posterRect.left,
-        top: targetRect.top - posterRect.top
-    };
-    var scale = (targetRect.right - targetRect.left) / (posterRect.right - posterRect.left);
-
-    poster.style.transition = "none";
-    poster.style.transform =
-        "translate(" + delta.left + "px, " + delta.top + "px) scale(" + scale + ")";
-    setTimeout(startPosterAnimation, 0);
-}
-
-function startPosterAnimation() {
-    var poster = document.getElementById('details-poster');
-    poster.style.transition = "transform 300ms";
-    poster.style.transform = "translate(0, 0) scale(1)";
+    document.getElementById('results').classList.add('small');
 }
 
 function receivedItemData() {
@@ -176,14 +163,16 @@ function populateDrawerWithDetails() {
     var responseDocument = items[asin];
     var attributes = responseDocument.getElementsByTagName("ItemAttributes")[0];
     var title = attributes.getElementsByTagName("Title")[0].textContent;
-    var genre = attributes.getElementsByTagName("Genre")[0].textContent;
-    var date = attributes.getElementsByTagName("ReleaseDate")[0].textContent;
 
-    var actorNodes = attributes.getElementsByTagName("Actor");
-    var actors = [];
-    for (var i = 0; i < actorNodes.length; i++) {
-        actors.push(actorNodes[i].textContent);
-    }
+    var rating = attributes.getElementsByTagName("AudienceRating")[0].textContent;
+    rating = rating.match(/[A-Z0-9-]+/)[0];
+
+    var runningTime = attributes.getElementsByTagName("RunningTime")[0].textContent;
+    var hours = runningTime >= 60 ? "" + Math.floor(runningTime / 60) + "h " : "";
+    runningTime = hours + (runningTime % 60) + "m";
+
+    var date = attributes.getElementsByTagName("ReleaseDate")[0].textContent;
+    date = date.match(/\d+/)[0];
 
     var price = responseDocument.getElementsByTagName("OfferSummary")[0]
                                 .getElementsByTagName("LowestNewPrice")[0]
@@ -192,10 +181,12 @@ function populateDrawerWithDetails() {
 
     replaceText("drawer-title", title);
     replaceText("drawer-date", date);
+    replaceText("drawer-rating", rating);
+    replaceText("drawer-running-time", runningTime);
     replaceText("details-title", title);
-    replaceText("details-genre", genre);
-    replaceText("details-actors", actors.join(", "));
     replaceText("details-date", date);
+    replaceText("details-rating", rating);
+    replaceText("details-running-time", runningTime);
     replaceText("details-price", price);
 }
 
@@ -211,6 +202,14 @@ function populateDrawerWithDescription() {
 
     replaceText("drawer-description", descriptions[asin].Plot);
     replaceText("details-description", descriptions[asin].Plot);
+
+    var starRatings = document.getElementsByClassName("star-rating");
+    for (var i = 0; i < starRatings.length; i++) {
+        var starRating = starRatings[i];
+        for (var j = 0; j < 5; j++)
+            starRating.classList.remove("star-rating-" + j);
+        starRating.classList.add("star-rating-" + Math.floor(descriptions[asin].imdbRating / 2.0));
+    }
 }
 
 function replaceText(nodeId, text) {
