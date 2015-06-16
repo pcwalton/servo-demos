@@ -2,19 +2,27 @@
 <html>
 <head>
 <title>Amazon for Servo</title>
-<link rel=stylesheet href=app.css></link>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'><link rel=stylesheet href=app.css></link>
 </head>
 <body>
-<h1>Movies</h1>
-<section id=details>
-    <h2 id=title></h2>
-    <div id=genre></div>
-    <div id=actors></div>
-    <div id=date></div>
-    <div id=price></div>
-    <p id=description></p>
+<h1>Servo Movies</h1>
+<section id=details class=collapsed>
+    <h2 id=details-title></h2>
+    <div id=details-genre></div>
+    <div id=details-actors></div>
+    <div id=details-date></div>
+    <div id=details-price></div>
+    <p id=details-description></p>
 </section>
-<ul id=results></ul>
+<div id=results-highlight></div>
+<ul id=results><li id=placeholder><div id=spinner></ul>
+<section id=drawer>
+    <div id=drawer-title-area>
+        <h2 id=drawer-title></h2>
+        <div id=drawer-date></div>
+    </div>
+    <p id=drawer-description></p>
+</section>
 <script src=keys.js></script>
 <script src=sha2.js></script>
 <script src=signing.js></script>
