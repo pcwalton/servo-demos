@@ -73,6 +73,7 @@ function receivedBrowseData() {
         li.setAttribute("data-asin", asin);
         li.setAttribute("data-title", title);
         li.addEventListener("mouseover", itemMousedOver, false);
+        li.addEventListener("click", itemClicked, false);
         li.setAttribute("title", title);
         li.style.backgroundImage = "url(" + imageURL + ")";
 
@@ -85,19 +86,8 @@ function receivedBrowseData() {
         loadNewItems();
 }
 
-function moveHighlightToSurround(target) {
-    var highlight = document.getElementById('results-highlight');
-
-    var rect = target.getBoundingClientRect();
-    highlight.style.left = (rect.left - HIGHLIGHT_WIDTH) + "px";
-    highlight.style.top = (rect.top - HIGHLIGHT_WIDTH) + "px";
-    highlight.style.width = (rect.width + HIGHLIGHT_WIDTH * 2) + "px";
-    highlight.style.height = (rect.height + HIGHLIGHT_WIDTH * 2) + "px";
-}
-
 function itemMousedOver(event) {
     var target = event.currentTarget;
-    moveHighlightToSurround(target);
 
     var asin = target.getAttribute("data-asin");
     document.getElementById('drawer').setAttribute("data-asin", asin);
@@ -141,12 +131,39 @@ function itemMousedOver(event) {
     }
 }
 
+function itemClicked(event) {
+    var target = event.currentTarget;
+    var targetRect = target.getBoundingClientRect();
+
+    document.getElementById('details-pane').classList.remove('collapsed');
+    document.getElementById('drawer').classList.add('collapsed');
+
+    var poster = document.getElementById('details-poster');
+    poster.style.backgroundImage = target.style.backgroundImage;
+
+    var posterRect = poster.getBoundingClientRect();
+    var delta = {
+        left: targetRect.left - posterRect.left,
+        top: targetRect.top - posterRect.top
+    };
+    var scale = (targetRect.right - targetRect.left) / (posterRect.right - posterRect.left);
+
+    poster.style.transition = "none";
+    poster.style.transform =
+        "translate(" + delta.left + "px, " + delta.top + "px) scale(" + scale + ")";
+    setTimeout(startPosterAnimation, 0);
+}
+
+function startPosterAnimation() {
+    var poster = document.getElementById('details-poster');
+    poster.style.transition = "transform 300ms";
+    poster.style.transform = "translate(0, 0) scale(1)";
+}
+
 function receivedItemData() {
     var parser = new DOMParser;
-    //console.log(this.responseText);
     var responseDocument = parser.parseFromString(this.responseText, "text/xml");
     var asin = responseDocument.getElementsByTagName("ItemId")[0].textContent;
-    console.log(asin);
     items[asin] = responseDocument;
     populateDrawerWithDetails();
 }
@@ -175,6 +192,11 @@ function populateDrawerWithDetails() {
 
     replaceText("drawer-title", title);
     replaceText("drawer-date", date);
+    replaceText("details-title", title);
+    replaceText("details-genre", genre);
+    replaceText("details-actors", actors.join(", "));
+    replaceText("details-date", date);
+    replaceText("details-price", price);
 }
 
 function receivedItemDescription(asin, description) {
@@ -188,6 +210,7 @@ function populateDrawerWithDescription() {
         return;
 
     replaceText("drawer-description", descriptions[asin].Plot);
+    replaceText("details-description", descriptions[asin].Plot);
 }
 
 function replaceText(nodeId, text) {

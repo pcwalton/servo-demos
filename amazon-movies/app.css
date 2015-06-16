@@ -15,15 +15,21 @@ h1 {
     color: white;
     font-weight: normal;
     background: linear-gradient(to bottom, #28A3DC, #0A6CA9);
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 48px;
     margin: 0;
     padding: 20px 12px 0;
 }
 
-#results {
+#results, #details-pane {
     margin: 120px 0 0 0;
+    position: relative;
+}
+
+#details-pane {
+    opacity: 1;
+    transition: height 300ms, margin 300ms, opacity 300ms;
 }
 
 #results > li {
@@ -32,13 +38,30 @@ h1 {
     height: 240px;
     width: 160px;
     background-size: auto 240px;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 8px;
+    border-style: solid;
+    border-width: 6px;
+    border-color: transparent;
+    margin: 2px;
+    transform: scale(1);
+    transition: transform 300ms, border-color 300ms, background-color 300ms;
+    background-color: transparent;
 }
 
-#details.collapsed {
-    display: none;
+#results > li:hover {
+    transform: scale(1.1);
+    border-color: white;
+    background-color: white;
+    z-index: 1;
+}
+
+#details-pane.collapsed {
+    height: 0;
+    margin: 0;
+    opacity: 0;
+}
+
+#drawer.collapsed {
+    transform: translateY(100%);
 }
 
 #drawer {
@@ -49,6 +72,9 @@ h1 {
     height: 128px;
     background: #070707;
     padding: 32px 48px 0;
+    z-index: 2;
+    transform: translateY(0);
+    transition: transform 300ms;
 }
 
 h2 {
@@ -83,5 +109,26 @@ h2 {
     background: white;
     position: absolute;
     transition: top 150ms linear, left 150ms linear, width 150ms linear, height 150ms linear;
+}
+
+#details-poster {
+    position: absolute;
+    top: 0px;
+    right: 48px;
+    width: 300px;
+    background-size: auto 450px;
+}
+
+#details-infobox {
+    margin: 0 396px 0 48px;
+}
+
+#details-poster, #details-infobox {
+    height: 450px;
+}
+
+#details-poster, #results > li {
+    background-position: center;
+    background-repeat: no-repeat;
 }
 

@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Amazon for Servo</title>
+<title>Servo Movies</title>
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'><link rel=stylesheet href=app.css></link>
 </head>
 <body>
 <h1>Servo Movies</h1>
-<section id=details class=collapsed>
-    <h2 id=details-title></h2>
-    <div id=details-genre></div>
-    <div id=details-actors></div>
-    <div id=details-date></div>
-    <div id=details-price></div>
-    <p id=details-description></p>
-</section>
-<div id=results-highlight></div>
+<div id=details-pane class=collapsed><div id=details-poster></div><section id=details-infobox>
+        <h2 id=details-title></h2>
+        <div id=details-genre></div>
+        <div id=details-actors></div>
+        <div id=details-date></div>
+        <div id=details-price></div>
+        <p id=details-description></p>
+    </section>
+</div>
 <ul id=results><li id=placeholder><div id=spinner></ul>
 <section id=drawer>
     <div id=drawer-title-area>
